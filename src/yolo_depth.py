@@ -85,9 +85,6 @@ while True:
     (h, w) = color_image.shape[:2]
     blob = cv2.dnn.blobFromImage(color_image, 1 / 255.0, (416,416), swapRB=True, crop=False)
 
-
-    # blob = cv2.dnn.blobFromImage(cv2.resize(color_image, (300,300)), 0.00743, (300,300), 127.5)
-
     # obtain detection
     net.setInput(blob)
     layerOutputs = net.forward(ln)
