@@ -100,6 +100,12 @@ while True:
             y = startY - 15 if startY > 30 else startY + 15
             cv2.putText(color_image, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2) 
 
+            # find the center of the box
+            center = np.array([(startX + endX)/2, (startY + endY)/2])
+            (centerX, centerY) = center.astype("int")
+            coord = "{:.2f}, {:.2f}".format(centerX, centerY)
+            cv2.putText(color_image, coord, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+
     # Stack both images horizontally
     images = np.hstack((color_image, depth_colormap))
 
