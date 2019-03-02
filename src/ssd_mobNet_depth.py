@@ -13,8 +13,6 @@ import argparse
 import imutils
 import time
 import matplotlib.pyplot as plt 
-from imutils.video import VideoStream
-from imutils.video import FPS
 
 # global variable declarations
 
