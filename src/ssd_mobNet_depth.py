@@ -35,9 +35,6 @@ config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 # Start streaming
 pipeline.start(config)
 
-# count for image shape check
-i = 0
-
 # argument parsing for weight and model
 ap = argparse.ArgumentParser()
 ap.add_argument("-p", "--prototxt", required=True,
@@ -59,6 +56,8 @@ COLORS = np.random.uniform(0,255, size=(len(CLASSES), 3))
 # load the serialized model from disk
 print("[INFO] loading model... ")
 net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
+print("[INFO] Caffe model loaded... ")
+
 
 # try:
 while True:
@@ -77,20 +76,41 @@ while True:
     # Apply colormap on depth image (image must be converted to 8-bit per pixel first)
     depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
 
+    # convert the frame into blob
+    (h, w) = color_image.shape[:2]
+    blob = cv2.dnn.blobFromImage(cv2.resize(color_image, (300,300)), 0.00743, (300,300), 127.5)
+
+    # obtain detection
+    net.setInput(blob)
+    detections = net.forward()
+
+    # loop over detections
+    for i in np.arange(0, detections.shape[2]):
+        # extract the confidence (i.e., probability) associated with the prediction
+        confidence = detections[0,0,i,2]
+        # filter out weak detections by ensuring the 'confidence' is greater than the minimum confidence
+        if confidence > args["confidence"]:
+            idx = int(detections[0, 0, i, 1])
+            box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+            (startX, startY, endX, endY) = box.astype("int")
+
+            # draw the predictions on the frame
+            label = "{}: {:.2f}%".format(CLASSES[idx], confidence * 100)
+            cv2.rectangle(color_image, (startX, startY), (endX, endY), COLORS[idx], 2)
+            y = startY - 15 if startY > 30 else startY + 15
+            cv2.putText(color_image, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2) 
+
     # Stack both images horizontally
     images = np.hstack((color_image, depth_colormap))
 
     # Show images
     cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('RealSense', images)
-    cv2.waitKey(1)
+    key = cv2.waitKey(1)
 
-    # Check the array shape of image, depth and the combined
-    i += 1
-    if i % 50 == 0:
-        print ("{}th color_image shape {}".format(i, color_image.shape))
-        print ("{}th depth_image shape {}".format(i, depth_image.shape))
-        print ("{}th image shape {}\n".format(i, images.shape))
+    # kill the windown when 'q' is pressed
+    if key == ord("q"):
+        break
 
 # finally:
 
