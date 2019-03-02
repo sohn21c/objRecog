@@ -50,7 +50,7 @@ args = vars(ap.parse_args())
 CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
     "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
     "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-    "sofa", "train", "tvmonitor"]
+    "sofa", "train", "monitor"]
 COLORS = np.random.uniform(0,255, size=(len(CLASSES), 3))
 
 # load the serialized model from disk
@@ -104,7 +104,14 @@ while True:
             center = np.array([(startX + endX)/2, (startY + endY)/2])
             (centerX, centerY) = center.astype("int")
             coord = "{:.2f}, {:.2f}".format(centerX, centerY)
-            cv2.putText(color_image, coord, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+            # cv2.putText(color_image, coord, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+
+            # find the depth at the center of the detection
+            depth = depth_image[centerY, centerX]
+            depth = depth.astype("int")
+            depth_meter = "{:.2f}m".format(depth/1000)
+            cv2.putText(color_image, depth_meter, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+            
 
     # Stack both images horizontally
     images = np.hstack((color_image, depth_colormap))
