@@ -67,6 +67,7 @@ print("[INFO] YOLO model loaded")
 # try:
 while True:
     
+    start = time.time()
     # Wait for a coherent pair of frames: depth and color
     frames = pipeline.wait_for_frames()
     depth_frame = frames.get_depth_frame()
@@ -129,6 +130,17 @@ while True:
             text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
             cv2.putText(color_image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
+            # find the center of the box
+            center = np.array([(x + (x + w))/2, (y + (y + h))/2])
+            (centerX, centerY) = center.astype("int")
+            coord = "{:.2f}, {:.2f}".format(centerX, centerY)
+
+            # find the depth at the center of the detection
+            depth = depth_image[centerY, centerX]
+            depth = depth.astype("int")
+            depth_meter = "{:.2f}m".format(depth/1000)
+            cv2.putText(color_image, depth_meter, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
     # Stack both images horizontally
     images = np.hstack((color_image, depth_colormap))
 
@@ -136,6 +148,9 @@ while True:
     cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('RealSense', images)
     key = cv2.waitKey(1)
+
+    end = time.time()
+    print ("Video frame rate is {:.2f}".format(1/(end - start)))
 
     # kill the windown when 'q' is pressed
     if key == ord("q"):
