@@ -105,7 +105,7 @@ while True:
             classID = np.argmax(scores)
             confidence = scores[classID]
 
-            # filter out weak predictions by ensuring the detected probability is greater than min. probability
+            # filter out weak predictions by ensuring the detected probability is greater than minimum value
             if confidence > args["confidence"]:
                 box = detection[0:4] * np.array([w, h, w, h])
                 (centerX, centerY, width, height) = box.astype("int")
