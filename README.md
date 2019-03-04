@@ -1,4 +1,4 @@
-## Object Detection with RGB-D camera
+# Object Detection with RGB-D camera
 #### _[James Sohn (Click to see the portfolio)](http://sohn21c.github.io)_
 #### _JAN 2019 ~ Present_
 
