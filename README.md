@@ -44,6 +44,11 @@ See the full list of dependencies [here](https://github.com/sohn21c/objRecog/blo
 
 Before running the program, one should have downloaded the object class names, weights and configuration files shown in the file structure below.  
 
+`coco.data` and `yolov3.cfg` can be found in the `cfg/` directory. And one can download the `yolov3.weights` files with the command below.  
+>$ wget http://pjreddie.com/media/files/yolov3.weights  
+
+Finally, one can run the script with the following command.  
+
 >$ python yolo_depth.py --yolo yolo-coco/  
 
 **5. File structure:**  
