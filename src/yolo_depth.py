@@ -66,6 +66,9 @@ ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 print("[INFO] YOLO model loaded")
 
+# count for image save 
+count = 0
+
 # process the frame and perform detection
 while True:
     
@@ -81,7 +84,13 @@ while True:
 
     # convert images to numpy arrays
     depth_image = np.asanyarray(depth_frame.get_data())
+    # print("depth_size:{}".format(depth_image.shape))
     color_image = np.asanyarray(color_frame.get_data())
+    # print("color_size:{}".format(color_image.shape))
+
+    # keep the copy of image for training data extraction
+    cimg_copy = color_image.copy()
+    dimg_copy = depth_image.copy()
 
     # apply colormap on depth image (image must be converted to 8-bit per pixel first)
     depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
@@ -96,6 +105,9 @@ while True:
     boxes = []
     confidences = []
     classIDs = []
+
+    # training_info list initiate
+    train_annot = []
 
     for output in layerOutputs:
         # loop over the detection
@@ -142,10 +154,14 @@ while True:
             coord = "{:.2f}, {:.2f}".format(centerX, centerY)
 
             # find the depth at the center of the detection
-            depth = depth_image[centerY, centerX]
+            depth = depth_image[centerY, centerX]   # depth_image.shape = (480,640)
             depth = depth.astype("int")
             depth_meter = "{:.2f}m".format(depth/1000)
             cv2.putText(color_image, depth_meter, (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
+            # save the information for training image extraction
+            train_info = np.array([[classIDs[i], centerX/640, centerY/480, w/640, h/480]])  # conforming to YOLO training format (class, x, y, w, h)
+            train_annot.append(train_info)
 
     # stack both images horizontally
     images = np.hstack((color_image, depth_colormap))
@@ -153,12 +169,41 @@ while True:
     # show images
     cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('RealSense', images)
-    
-    # press 'q' to kill the window
+
+
     key = cv2.waitKey(1)
+    # press 'q' to kill the window
     if key == ord("q"):
         break
 
+    # press 'k' to save the training data
+    elif key == ord("k"):
+        # create the folder to save training images
+        path = os.getcwd()
+        img_dir = path + "/img/"
+        if not os.path.exists(img_dir):
+            os.makedirs(img_dir)
+
+        # count for the image number
+        count += 1
+
+        # save the image
+        imgname_c = img_dir + "c_img_" + str(count) + ".png"
+        imgname_d = img_dir + "d_img_" + str(count) + ".png"
+        cv2.imwrite(os.path.join(img_dir, imgname_c), cimg_copy)
+        cv2.imwrite(os.path.join(img_dir, imgname_d), dimg_copy)
+
+        # save the txt file necessary for YOLO training
+        txtname_c = img_dir + "c_img_" + str(count) + ".txt"
+        txtname_d = img_dir + "d_img_" + str(count) + ".txt"
+        cfile = open(os.path.join(img_dir, txtname_c), "w")
+        dfile = open(os.path.join(img_dir, txtname_d), "w")
+        for i in range(len(train_annot)):
+            cfile.write("%d %f %f %f %f\n" %(train_annot[i][0][0],train_annot[i][0][1],train_annot[i][0][2],train_annot[i][0][3],train_annot[i][0][4]))
+            dfile.write("%d %f %f %f %f\n" %(train_annot[i][0][0],train_annot[i][0][1],train_annot[i][0][2],train_annot[i][0][3],train_annot[i][0][4]))
+        cfile.close()
+        dfile.close()
+        
     # time step for FPS calculation    
     end = time.time()
     print ("Video frame rate is {:.2f}".format(1/(end - start)))
