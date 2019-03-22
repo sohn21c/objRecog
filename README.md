@@ -61,7 +61,17 @@ yolo
 
 ## Hardware
 [Intel Realsense D435](https://github.com/IntelRealSense/librealsense)  
-One should download and install [Realsense SDK2.0](https://github.com/IntelRealSense/librealsense) provided in the link and the [Python Wrapper](https://github.com/IntelRealSense/librealsense/tree/master/wrappers/python)
+One should download and install [Realsense SDK2.0](https://github.com/IntelRealSense/librealsense) provided in the link and the [Python Wrapper](https://github.com/IntelRealSense/librealsense/tree/master/wrappers/python)  
+#### Spec  
+1. 2 HD image sensors (Left and Right side cameras)  
+	1080p  
+	10 bit Raw  
+2. IR projector  
+	Improves the depth information retrieval  
+3. Color sensor  
+	1080p  
+	10 bit Raw RGB  
+
 
 ## Reference/Credit
 Object detection using opencv DNN module is mostly inspired by [Pyimagesearch](https://pyimagesearch.com)
