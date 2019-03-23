@@ -12,7 +12,7 @@ To build a object detection system with RGB-D camera that can show both the obje
 [![YouTube](https://github.com/sohn21c/objRecog/blob/master/img/ssd1.jpg?raw=true)](https://youtu.be/vZw5j909vss)
 
 ## Algorithm  
-As this project was planned to teach myself the deep learning algorithms used for object detection pipeline, I have read a number of relevant publications such R-CNN and its variants, YOLO, SSD and etc,,. I am still compiling the write-up for such learning process of different algorithms but one can take a peek at the unfinished piece here.  
+For the implementation of the pipeline, YOLOv3 was used. In the process of landing the decision to use YOLO, I have researched many other detection CNN architectures like R-CNN, SSD and etc,,. One can have an access to my personal write-up of my algorithm research and should consider it as brief summary. One should refer to original publication for detailed information.  
 [Link to the algorithm search write-up](https://github.com/sohn21c/research/blob/master/objDetection.md)  
 
 ## Software
@@ -58,6 +58,11 @@ yolo
 │   │   ├── yolov3.cfg  
 │   │   └── yolov3.weights  
 │   └── yolo_depth.py  
+
+**6. Add-on functions:**  
+_(update on MAR 20th, 2019)_  
+`yolo_depth.py` [commit ae134a4](ae134a45ec1a2d4909cb422885e1266081e54574) now as add-on function to generate one's own training data **with depth** while performing detection. One can simply input 'k' on one's keyboard while on the detection window. Doing so will create a folder `/img` in current directory and save color img, depth img and corresponding text files with detection label annotation YOLO can accept.  
+
 
 ## Hardware
 [Intel Realsense D435](https://github.com/IntelRealSense/librealsense)  
