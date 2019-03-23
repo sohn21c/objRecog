@@ -61,7 +61,7 @@ yolo
 
 **6. Add-on functions:**  
 _(update on MAR 20th, 2019)_  
-`yolo_depth.py` [commit ae134a4](ae134a45ec1a2d4909cb422885e1266081e54574) now as add-on function to generate one's own training data **with depth** while performing detection. One can simply input 'k' on one's keyboard while on the detection window. Doing so will create a folder `/img` in current directory and save color img, depth img and corresponding text files with detection label annotation YOLO can accept.  
+`yolo_depth.py` [(ae134a4)](ae134a45ec1a2d4909cb422885e1266081e54574) now as add-on function to generate one's own training data **with depth** while performing detection. One can simply input 'k' on one's keyboard while on the detection window. Doing so will create a folder `/img` in current directory and save color img, depth img and corresponding text files with detection label annotation `darknet` can accept for training.  
 
 
 ## Hardware
