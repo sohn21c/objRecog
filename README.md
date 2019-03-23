@@ -3,7 +3,7 @@
 #### _JAN 2019 ~ Present_
 
 ## Objective  
-To build a object detection system with RGB-D camera that can show both the object classification and the distance from the sensor. While working toward the goal, a number of detection algorithms will be reviewed and tested for performance comparison as well. 
+To build a object detection system with RGB-D camera that can show both the object classification and the distance from the sensor. In process of completing the pipeline, a number of detection algorithms are researched and one is selected for implementation. 
 
 ## Video demonstration
 1. Object detection demo with YOLO (MS-COCO dataset)  
@@ -22,7 +22,7 @@ For the implementation of the pipeline, YOLOv3 was used. In the process of landi
 
 **1. High level overview:**  
 
-This script initiates the Intel Realsense D435 camera, performss object detection with YOLO and shows the distance of each detection of objects from the sensor.  
+This script initiates the Intel Realsense D435 camera, performss object detection with YOLO trained on MS-COCO data, capable of detecting 80 different classifications, and shows the distance of each detection of objects from the sensor up to 10m.  
 
 **2. Dependency:**  
 
@@ -36,7 +36,7 @@ See the full list of dependencies [here](https://github.com/sohn21c/objRecog/blo
 **3. Input arguments:**  
 
 - -h, --help	
-- -y, --yolo 		 	path to yolo directory  
+- -y, --yolo 		 	path to yolo directory that contains weight file and class labels as shown in the file structure below  
 - -c, --confidence 	min. probability filter, default = 0.5  
 - -t, --threshold 	detection threshold, dafault = 0.3  
 
